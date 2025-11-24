@@ -1,0 +1,53 @@
+name: Mirror Binaries (From Fangliding)
+
+on:
+  workflow_dispatch: # 手動觸發
+  push:
+    tags:
+      - 'v*' # 打標籤時觸發
+
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    name: Repackage and Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download & Extract Binaries
+        run: |
+          mkdir -p dist
+          
+          echo "⬇️ 正在下載 AMD64 版本..."
+          wget -O amd64.tar.gz "https://github.com/Fangliding/warp-go/releases/download/v1.0.8/warp-go_1.0.8_linux_amd64.tar.gz"
+          tar -xzvf amd64.tar.gz
+          mv warp-go dist/warp-go_linux_amd64
+          rm -f amd64.tar.gz warp-go.conf # 清理殘留
+          
+          echo "⬇️ 正在下載 ARM64 版本..."
+          wget -O arm64.tar.gz "https://github.com/Fangliding/warp-go/releases/download/v1.0.8/warp-go_1.0.8_linux_arm64.tar.gz"
+          tar -xzvf arm64.tar.gz
+          mv warp-go dist/warp-go_linux_arm64
+          rm -f arm64.tar.gz warp-go.conf
+          
+          # 如果需要 amd64v4 (較新的 CPU 指令集)，也可以加上
+          # wget ...
+          
+      - name: Generate Checksums
+        run: |
+          cd dist
+          sha256sum warp-go_linux_amd64 > warp-go_linux_amd64.sha256
+          sha256sum warp-go_linux_arm64 > warp-go_linux_arm64.sha256
+          
+          echo "=== Checksums ==="
+          cat *.sha256
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/warp-go_linux_amd64
+            dist/warp-go_linux_amd64.sha256
+            dist/warp-go_linux_arm64
+            dist/warp-go_linux_arm64.sha256
+          generate_release_notes: true
