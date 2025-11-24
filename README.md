@@ -38,6 +38,10 @@ sha256sum -c warp-go_linux_amd64.sha256
 ## 🔗 上游致謝 (Credits)
 本項目僅作為分發鏡像，核心代碼歸原作者所有。
 
-Core Logic: ProjectWARP/warp-go
+Core Logic: [ProjectWARP/warp-go](https://gitlab.com/ProjectWARP/warp-go)
 
-Binary Source: Fangliding/warp-go
+Binary Source: [Fangliding/warp-go](https://github.com/Fangliding/warp-go)
+
+## ⚠️ 免責聲明 (Disclaimer)
+本倉庫提供的二進制文件來源於開源社區。使用者應自行承擔使用風險。本倉庫與 Cloudflare Inc. 無關。
+
