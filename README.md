@@ -34,3 +34,10 @@ wget [https://github.com/Yat-Muk/warp-go-build/releases/latest/download/warp-go_
 
 # 2. 進行比對 (輸出 OK 即為安全)
 sha256sum -c warp-go_linux_amd64.sha256
+```
+## 🔗 上游致謝 (Credits)
+本項目僅作為分發鏡像，核心代碼歸原作者所有。
+
+Core Logic: ProjectWARP/warp-go
+
+Binary Source: Fangliding/warp-go
