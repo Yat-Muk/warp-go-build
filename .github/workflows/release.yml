@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: '目標同步版本號 (例如 v1.0.8)'
+        description: '目標同步版本號'
         required: true
         default: 'v1.0.8'
       
@@ -23,14 +23,11 @@ jobs:
       - name: Parse Version Info
         id: meta
         run: |
-          # 獲取輸入的標籤
           TAG="${{ github.event.inputs.tag_name }}"
           echo "TAG=$TAG" >> $GITHUB_ENV
           
-          # 自動提取純數字版本號 (去掉 v)
           VERSION="${TAG#v}"
           
-          # 如果用戶手動指定了文件名版本，則優先使用
           if [[ -n "${{ github.event.inputs.force_filename_version }}" ]]; then
             VERSION="${{ github.event.inputs.force_filename_version }}"
           fi
