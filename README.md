@@ -91,30 +91,6 @@ echo "$(cat wgcf.sha256)  wgcf" | sha256sum -c -
 
 -----
 
-## 👨‍💻 開發者集成 (For Developers)
-
-如果您正在維護 `CFwarp` 類腳本，可以使用以下代碼片段自動獲取本倉庫的資源：
-
-# 定義倉庫基礎 URL
-
-```bash
-REPO="[https://github.com/Yat-Muk/warp-go-build/releases](https://github.com/Yat-Muk/warp-go-build/releases)"
-```
-
-# 下載 WGCF (始終最新)
-
-```bash
-wget -O wgcf "$REPO/latest/download/wgcf_linux_amd64"
-```
-
-# 下載 WARP-GO (鎖定版本)
-
-```bash
-wget -O warp-go "$REPO/download/v1.0.8/warp-go_linux_amd64"
-```
-
------
-
 ## ⚠️ 免責聲明 (Disclaimer)
 
   * 本項目僅為 **二進制文件分發鏡像 (Mirror)**，不涉及源代碼修改。
