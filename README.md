@@ -32,8 +32,8 @@
 
 | 架構 (Arch) | 下載鏈接 (Direct Link) |
 | :--- | :--- |
-| **Linux AMD64** | `https://github.com/Yat-Muk/warp-go-build/releases/download/v1.0.8/warp-go_linux_amd64` |
-| **Linux ARM64** | `https://github.com/Yat-Muk/warp-go-build/releases/download/v1.0.8/warp-go_linux_arm64` |
+| **Linux AMD64** | [`https://github.com/Yat-Muk/warp-go-build/releases/download/v1.0.8/warp-go_linux_amd64`](https://github.com/Yat-Muk/warp-go-build/releases/download/v1.0.8/warp-go_linux_amd64) |
+| **Linux ARM64** | [`https://github.com/Yat-Muk/warp-go-build/releases/download/v1.0.8/warp-go_linux_arm64`](https://github.com/Yat-Muk/warp-go-build/releases/download/v1.0.8/warp-go_linux_arm64) |
 
 ### 2. WGCF (Latest Auto-Sync)
 
@@ -41,8 +41,8 @@
 
 | 架構 (Arch) | 下載鏈接 (Direct Link) |
 | :--- | :--- |
-| **Linux AMD64** | `https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64` |
-| **Linux ARM64** | `https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_arm64` |
+| **Linux AMD64** | [`https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64`](https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64) |
+| **Linux ARM64** | [`https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_arm64`](https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_arm64) |
 
 ---
 
