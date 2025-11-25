@@ -28,11 +28,10 @@ jobs:
             sha256sum "$file" > "$file.sha256"
           done
 
-      - name: Publish to 'tools-latest'
+      - name: Publish to Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "tools-latest"
-          name: "Helper Tools"
-          body: "Synced on $(date)"
           make_latest: false
+          allow_updates: true
           files: dist/*
