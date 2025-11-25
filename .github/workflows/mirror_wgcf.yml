@@ -36,20 +36,18 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           
           echo "🎯 目標版本: $TAG"
-          echo "📂 對應文件名版本: $VERSION"
 
-      - name: Download Official Binaries
+      - name: Download & Rename Binaries
         run: |
           mkdir -p dist
           
-          # URL 格式: https://github.com/ViRb3/wgcf/releases/download/v2.2.29/wgcf_2.2.29_linux_amd64
           URL_AMD64="https://github.com/ViRb3/wgcf/releases/download/${TAG}/wgcf_${VERSION}_linux_amd64"
           URL_ARM64="https://github.com/ViRb3/wgcf/releases/download/${TAG}/wgcf_${VERSION}_linux_arm64"
           
-          echo "⬇️ 下載 AMD64..."
+          echo "⬇️ 下載並重命名 AMD64..."
           wget -q --show-progress -O dist/wgcf_linux_amd64 "$URL_AMD64"
           
-          echo "⬇️ 下載 ARM64..."
+          echo "⬇️ 下載並重命名 ARM64..."
           wget -q --show-progress -O dist/wgcf_linux_arm64 "$URL_ARM64"
           
           chmod +x dist/*
@@ -62,7 +60,7 @@ jobs:
           echo "=== Checksums ==="
           cat *.sha256
 
-      - name: Create/Update Release
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "wgcf-${{ env.TAG }}"
@@ -72,8 +70,7 @@ jobs:
             Version: ${{ env.TAG }}
             Synced on: $(date +%Y-%m-%d)
           
-          make_latest: true 
-          allow_updates: true
+          make_latest: true
           
           files: |
             dist/wgcf_linux_amd64
