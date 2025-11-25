@@ -1,47 +1,118 @@
-# warp-go-build: Automated Binary Mirror
+-----
 
-[![Build and Mirror](https://github.com/Yat-Muk/warp-go-build/actions/workflows/release.yml/badge.svg)](https://github.com/Yat-Muk/warp-go-build/actions/workflows/release.yml)
+````markdown
+# warp-go-build: Automated Binary Distribution
+
+[![Mirror Binaries (Sync v1.0.8)](https://github.com/Yat-Muk/warp-go-build/actions/workflows/release.yml/badge.svg)](https://github.com/Yat-Muk/warp-go-build/actions/workflows/release.yml)
+[![Mirror WGCF (Auto-Latest)](https://github.com/Yat-Muk/warp-go-build/actions/workflows/mirror_wgcf.yml/badge.svg)](https://github.com/Yat-Muk/warp-go-build/actions/workflows/mirror_wgcf.yml)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Yat-Muk/warp-go-build)](https://github.com/Yat-Muk/warp-go-build/releases)
 
-這是一個全自動化的 `warp-go` 二進制文件分發倉庫。
-本倉庫利用 GitHub Actions 自動從上游穩定源同步、校驗並重新打包發布 `warp-go` 執行檔，旨在為腳本開發者和終端用戶提供一個**穩定**、**高速**且**可驗證**的下載源。
+**Enterprise-grade distribution mirror for Cloudflare WARP clients.**
+**企業級 Cloudflare WARP 客戶端自動分發鏡像。**
 
-This is an automated mirror repository for `warp-go` binaries. It utilizes GitHub Actions to sync, verify, repackage, and release binaries from upstream stable sources, providing a secure and fast download endpoint.
-
----
-
-## 📥 下載與安裝 (Downloads)
-
-所有二進制文件均託管於 [GitHub Releases](https://github.com/Yat-Muk/warp-go-build/releases) 頁面，支持全球 CDN 加速。
-
-| 架構 (Arch) | 說明 (Description) | 下載鏈接 (Link) |
-| :--- | :--- | :--- |
-| **Linux AMD64** | 常見的 Intel/AMD VPS | [最新版本下載](https://github.com/Yat-Muk/warp-go-build/releases/latest/download/warp-go_linux_amd64) |
-| **Linux ARM64** | ARM 架構 (如 Oracle Cloud ARM) | [最新版本下載](https://github.com/Yat-Muk/warp-go-build/releases/latest/download/warp-go_linux_arm64) |
+本倉庫是一個全自動化的二進制文件供應鏈節點。它利用 GitHub Actions 自動追蹤上游官方/穩定源，下載、校驗、標準化並重新發布 `warp-go` 和 `wgcf` 執行檔。
 
 ---
 
-## 🛡️ 安全校驗 (Verification)
+## 📦 組件列表 (Components)
 
-為了確保供應鏈安全，每次發布均包含 SHA256 校驗文件。建議在下載後進行比對。
+本倉庫同時維護兩個核心組件，所有文件均包含 **SHA256 校驗**。
 
-**驗證步驟：**
+| 組件名稱 | 核心描述 | 上游來源 (Upstream) | 更新策略 |
+| :--- | :--- | :--- | :--- |
+| **warp-go** | 輕量級 WARP 客戶端 (Go語言) | [Fangliding/warp-go](https://github.com/Fangliding/warp-go) | **鎖定穩定版 (v1.0.8)** |
+| **wgcf** | WireGuard 帳戶註冊工具 | [ViRb3/wgcf](https://github.com/ViRb3/wgcf) | **每週自動同步最新版** |
+
+---
+
+## 📥 下載地址 (Downloads)
+
+您可以直接從 [Releases 頁面](https://github.com/Yat-Muk/warp-go-build/releases) 獲取文件，或使用以下永久鏈接：
+
+### 1. WARP-GO (v1.0.8 Stable)
+
+| 架構 (Arch) | 下載鏈接 (Direct Link) |
+| :--- | :--- |
+| **Linux AMD64** | `https://github.com/Yat-Muk/warp-go-build/releases/download/v1.0.8/warp-go_linux_amd64` |
+| **Linux ARM64** | `https://github.com/Yat-Muk/warp-go-build/releases/download/v1.0.8/warp-go_linux_arm64` |
+
+### 2. WGCF (Latest Auto-Sync)
+
+*注意：WGCF 文件名已標準化，不帶版本號，方便腳本調用。*
+
+| 架構 (Arch) | 下載鏈接 (Direct Link) |
+| :--- | :--- |
+| **Linux AMD64** | `https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64` |
+| **Linux ARM64** | `https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_arm64` |
+
+---
+
+## 🛡️ 安全驗證 (Security & Integrity)
+
+為了防止供應鏈攻擊或傳輸損壞，**強烈建議**在運行前校驗文件哈希值。
+
+**校驗示例 (以 wgcf 為例)：**
 
 ```bash
-# 1. 下載執行檔與校驗文件
-wget [https://github.com/Yat-Muk/warp-go-build/releases/latest/download/warp-go_linux_amd64](https://github.com/Yat-Muk/warp-go-build/releases/latest/download/warp-go_linux_amd64)
-wget [https://github.com/Yat-Muk/warp-go-build/releases/latest/download/warp-go_linux_amd64.sha256](https://github.com/Yat-Muk/warp-go-build/releases/latest/download/warp-go_linux_amd64.sha256)
+# 1. 下載二進制文件
+wget -O wgcf [https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64](https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64)
 
-# 2. 進行比對 (輸出 OK 即為安全)
-sha256sum -c warp-go_linux_amd64.sha256
+# 2. 下載對應的校驗文件
+wget -O wgcf.sha256 [https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64.sha256](https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64.sha256)
+
+# 3. 進行比對 (SHA256)
+# 手動比對：
+cat wgcf.sha256
+sha256sum wgcf
+# 或自動比對：
+echo "$(cat wgcf.sha256)  wgcf" | sha256sum -c -
+````
+
+-----
+
+## 🤖 自動化機制 (Automation Workflows)
+
+本倉庫的維護完全無人值守，確保了構建過程的透明性與可追溯性。
+
+1.  **Mirror Binaries (Sync v1.0.8)**:
+      * 手動觸發或標籤觸發。
+      * 從 GitHub Mirror 拉取 `warp-go` 已編譯文件，確保版本與主流腳本兼容。
+2.  **Mirror WGCF (Auto-Latest)**:
+      * **每週一凌晨 02:00 (UTC) 自動運行**。
+      * 調用 GitHub API 查詢 `ViRb3/wgcf` 的最新 Release。
+      * 自動下載、重命名為通用格式 (`wgcf_linux_amd64`) 並發布到 Latest Release。
+
+-----
+
+## 👨‍💻 開發者集成 (For Developers)
+
+如果您正在維護 `CFwarp` 類腳本，可以使用以下代碼片段自動獲取本倉庫的資源：
+
+```bash
+# 定義倉庫基礎 URL
+REPO="[https://github.com/Yat-Muk/warp-go-build/releases](https://github.com/Yat-Muk/warp-go-build/releases)"
+
+# 下載 WGCF (始終最新)
+wget -O wgcf "$REPO/latest/download/wgcf_linux_amd64"
+
+# 下載 WARP-GO (鎖定版本)
+wget -O warp-go "$REPO/download/v1.0.8/warp-go_linux_amd64"
 ```
-## 🔗 上游致謝 (Credits)
-本項目僅作為分發鏡像，核心代碼歸原作者所有。
 
-Core Logic: [ProjectWARP/warp-go](https://gitlab.com/ProjectWARP/warp-go)
-
-Binary Source: [Fangliding/warp-go](https://github.com/Fangliding/warp-go)
+-----
 
 ## ⚠️ 免責聲明 (Disclaimer)
-本倉庫提供的二進制文件來源於開源社區。使用者應自行承擔使用風險。本倉庫與 Cloudflare Inc. 無關。
 
+  * 本項目僅為 **二進制文件分發鏡像 (Mirror)**，不涉及源代碼修改。
+  * 所有程序版權歸原作者所有。
+  * 使用本倉庫文件所產生的任何後果由使用者自行承擔。
+
+**Upstream Credits:**
+
+  * [ProjectWARP/warp-go](https://gitlab.com/ProjectWARP/warp-go)
+  * [ViRb3/wgcf](https://github.com/ViRb3/wgcf)
+
+-----
+
+**License**
+MIT License. See [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
