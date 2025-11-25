@@ -33,11 +33,10 @@ jobs:
           sha256sum wgcf_linux_amd64 > wgcf_linux_amd64.sha256
           sha256sum wgcf_linux_arm64 > wgcf_linux_arm64.sha256
 
-      - name: Publish to 'wgcf-latest'
+      - name: Publish to Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "wgcf-latest"
-          name: "WGCF (Auto-Updated)"
-          body: "Synced from ${TAG} on $(date)"
           make_latest: false
+          allow_updates: true
           files: dist/*
