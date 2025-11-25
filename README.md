@@ -53,7 +53,7 @@ wget -O wgcf.sha256 [https://github.com/Yat-Muk/warp-go-build/releases/latest/do
 ```
 # 2. 進行比對
 # 方法 A: 自動比對 (如果格式支持)
-# sha256sum -c wgcf.sha256
+sha256sum -c wgcf.sha256
 
 # 方法 B: 手動比對
 echo "預期 Hash: $(cat wgcf.sha256)"
