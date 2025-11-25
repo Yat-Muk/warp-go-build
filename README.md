@@ -57,8 +57,8 @@ sha256sum -c wgcf.sha256
 
 # 方法 B: 手動比對
 echo "預期 Hash: $(cat wgcf.sha256)"
-echo "實際 Hash: $(sha256sum wgcf | awk '{print $1}')"
 
+echo "實際 Hash: $(sha256sum wgcf | awk '{print $1}')"
 
 -----
 
