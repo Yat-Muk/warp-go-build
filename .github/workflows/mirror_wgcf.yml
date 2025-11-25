@@ -1,34 +1,48 @@
-name: Mirror WGCF (Official Upstream)
+name: Mirror WGCF (Auto-Latest)
 
 on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: 'WGCF 版本號'
-        required: true
-        default: 'v2.2.29'
+        description: '指定版本 (留空則自動抓取官方最新)'
+        required: false
+  
+  schedule:
+    - cron: '0 2 * * 1'
 
 permissions:
   contents: write
 
 jobs:
   mirror_wgcf:
-    name: Sync WGCF Binary
+    name: Auto Sync WGCF
     runs-on: ubuntu-latest
     steps:
-      - name: Parse Version
+      - name: Detect Latest Version
+        id: meta
         run: |
-          TAG="${{ github.event.inputs.tag_name }}"
+          if [[ -n "${{ github.event.inputs.tag_name }}" ]]; then
+            TAG="${{ github.event.inputs.tag_name }}"
+            echo "Manual input detected: $TAG"
+          else
+            echo "Fetching latest release from upstream..."
+            TAG=$(curl -sL https://api.github.com/repos/ViRb3/wgcf/releases/latest | jq -r ".tag_name")
+            echo "Auto-detected latest version: $TAG"
+          fi
+
           VERSION="${TAG#v}"
           
           echo "TAG=$TAG" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "🎯 目標版本: $TAG (文件名版本: $VERSION)"
+          
+          echo "🎯 目標版本: $TAG"
+          echo "📂 對應文件名版本: $VERSION"
 
       - name: Download Official Binaries
         run: |
           mkdir -p dist
-
+          
+          # URL 格式: https://github.com/ViRb3/wgcf/releases/download/v2.2.29/wgcf_2.2.29_linux_amd64
           URL_AMD64="https://github.com/ViRb3/wgcf/releases/download/${TAG}/wgcf_${VERSION}_linux_amd64"
           URL_ARM64="https://github.com/ViRb3/wgcf/releases/download/${TAG}/wgcf_${VERSION}_linux_arm64"
           
@@ -45,18 +59,22 @@ jobs:
           cd dist
           sha256sum wgcf_linux_amd64 > wgcf_linux_amd64.sha256
           sha256sum wgcf_linux_arm64 > wgcf_linux_arm64.sha256
+          echo "=== Checksums ==="
           cat *.sha256
 
-      - name: Create Release
+      - name: Create/Update Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "wgcf-${{ env.TAG }}"
-          name: "WGCF ${{ env.TAG }} (Mirror)"
+          name: "WGCF ${{ env.TAG }}"
           body: |
-            Mirrored from official upstream: https://github.com/ViRb3/wgcf
+            Auto-mirrored from official upstream: https://github.com/ViRb3/wgcf
             Version: ${{ env.TAG }}
-            Date: $(date +%Y-%m-%d)
-          make_latest: false
+            Synced on: $(date +%Y-%m-%d)
+          
+          make_latest: true 
+          allow_updates: true
+          
           files: |
             dist/wgcf_linux_amd64
             dist/wgcf_linux_amd64.sha256
