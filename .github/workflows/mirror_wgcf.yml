@@ -1,0 +1,64 @@
+name: Mirror WGCF (Official Upstream)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'WGCF 版本號'
+        required: true
+        default: 'v2.2.29'
+
+permissions:
+  contents: write
+
+jobs:
+  mirror_wgcf:
+    name: Sync WGCF Binary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse Version
+        run: |
+          TAG="${{ github.event.inputs.tag_name }}"
+          VERSION="${TAG#v}"
+          
+          echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "🎯 目標版本: $TAG (文件名版本: $VERSION)"
+
+      - name: Download Official Binaries
+        run: |
+          mkdir -p dist
+
+          URL_AMD64="https://github.com/ViRb3/wgcf/releases/download/${TAG}/wgcf_${VERSION}_linux_amd64"
+          URL_ARM64="https://github.com/ViRb3/wgcf/releases/download/${TAG}/wgcf_${VERSION}_linux_arm64"
+          
+          echo "⬇️ 下載 AMD64..."
+          wget -q --show-progress -O dist/wgcf_linux_amd64 "$URL_AMD64"
+          
+          echo "⬇️ 下載 ARM64..."
+          wget -q --show-progress -O dist/wgcf_linux_arm64 "$URL_ARM64"
+          
+          chmod +x dist/*
+
+      - name: Generate Checksums
+        run: |
+          cd dist
+          sha256sum wgcf_linux_amd64 > wgcf_linux_amd64.sha256
+          sha256sum wgcf_linux_arm64 > wgcf_linux_arm64.sha256
+          cat *.sha256
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "wgcf-${{ env.TAG }}"
+          name: "WGCF ${{ env.TAG }} (Mirror)"
+          body: |
+            Mirrored from official upstream: https://github.com/ViRb3/wgcf
+            Version: ${{ env.TAG }}
+            Date: $(date +%Y-%m-%d)
+          make_latest: false
+          files: |
+            dist/wgcf_linux_amd64
+            dist/wgcf_linux_amd64.sha256
+            dist/wgcf_linux_arm64
+            dist/wgcf_linux_arm64.sha256
