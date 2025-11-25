@@ -52,19 +52,28 @@
 
 **校驗示例 (以 wgcf 為例)：**
 
-```bash
 # 1. 下載二進制文件
+
+```bash
 wget -O wgcf [https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64](https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64)
-
+```
 # 2. 下載對應的校驗文件
-wget -O wgcf.sha256 [https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64.sha256](https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64.sha256)
 
+```bash
+wget -O wgcf.sha256 [https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64.sha256](https://github.com/Yat-Muk/warp-go-build/releases/latest/download/wgcf_linux_amd64.sha256)
+```
 # 3. 進行比對 (SHA256)
 # 手動比對：
+
+```bash
 cat wgcf.sha256
 sha256sum wgcf
+```
 # 或自動比對：
+
+```bash
 echo "$(cat wgcf.sha256)  wgcf" | sha256sum -c -
+```
 
 -----
 
@@ -86,14 +95,21 @@ echo "$(cat wgcf.sha256)  wgcf" | sha256sum -c -
 
 如果您正在維護 `CFwarp` 類腳本，可以使用以下代碼片段自動獲取本倉庫的資源：
 
-```bash
 # 定義倉庫基礎 URL
+
+```bash
 REPO="[https://github.com/Yat-Muk/warp-go-build/releases](https://github.com/Yat-Muk/warp-go-build/releases)"
+```
 
 # 下載 WGCF (始終最新)
+
+```bash
 wget -O wgcf "$REPO/latest/download/wgcf_linux_amd64"
+```
 
 # 下載 WARP-GO (鎖定版本)
+
+```bash
 wget -O warp-go "$REPO/download/v1.0.8/warp-go_linux_amd64"
 ```
 
