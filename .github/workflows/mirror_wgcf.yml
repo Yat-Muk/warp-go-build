@@ -1,79 +1,43 @@
-name: Mirror WGCF (Auto-Latest)
+name: Mirror WGCF (Fixed Tag)
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag_name:
-        description: '指定版本 (留空則自動抓取官方最新)'
-        required: false
-  
   schedule:
     - cron: '0 2 * * 1'
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   mirror_wgcf:
-    name: Auto Sync WGCF
+    name: Sync WGCF
     runs-on: ubuntu-latest
     steps:
-      - name: Detect Latest Version
-        id: meta
+      - name: Get Latest Version
         run: |
-          if [[ -n "${{ github.event.inputs.tag_name }}" ]]; then
-            TAG="${{ github.event.inputs.tag_name }}"
-            echo "Manual input detected: $TAG"
-          else
-            echo "Fetching latest release from upstream..."
-            TAG=$(curl -sL https://api.github.com/repos/ViRb3/wgcf/releases/latest | jq -r ".tag_name")
-            echo "Auto-detected latest version: $TAG"
-          fi
-
+          TAG=$(curl -sL https://api.github.com/repos/ViRb3/wgcf/releases/latest | jq -r ".tag_name")
           VERSION="${TAG#v}"
-          
           echo "TAG=$TAG" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          
-          echo "🎯 目標版本: $TAG"
 
-      - name: Download & Rename Binaries
+      - name: Download
         run: |
           mkdir -p dist
-          
-          URL_AMD64="https://github.com/ViRb3/wgcf/releases/download/${TAG}/wgcf_${VERSION}_linux_amd64"
-          URL_ARM64="https://github.com/ViRb3/wgcf/releases/download/${TAG}/wgcf_${VERSION}_linux_arm64"
-          
-          echo "⬇️ 下載並重命名 AMD64..."
-          wget -q --show-progress -O dist/wgcf_linux_amd64 "$URL_AMD64"
-          
-          echo "⬇️ 下載並重命名 ARM64..."
-          wget -q --show-progress -O dist/wgcf_linux_arm64 "$URL_ARM64"
-          
+          wget -O dist/wgcf_linux_amd64 "https://github.com/ViRb3/wgcf/releases/download/${TAG}/wgcf_${VERSION}_linux_amd64"
+          wget -O dist/wgcf_linux_arm64 "https://github.com/ViRb3/wgcf/releases/download/${TAG}/wgcf_${VERSION}_linux_arm64"
           chmod +x dist/*
 
-      - name: Generate Checksums
+      - name: Generate Individual Checksums
         run: |
           cd dist
           sha256sum wgcf_linux_amd64 > wgcf_linux_amd64.sha256
           sha256sum wgcf_linux_arm64 > wgcf_linux_arm64.sha256
-          echo "=== Checksums ==="
-          cat *.sha256
 
-      - name: Create Release
+      - name: Publish to 'wgcf-latest'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "wgcf-${{ env.TAG }}"
-          name: "WGCF ${{ env.TAG }}"
-          body: |
-            Auto-mirrored from official upstream: https://github.com/ViRb3/wgcf
-            Version: ${{ env.TAG }}
-            Synced on: $(date +%Y-%m-%d)
-          
-          make_latest: true
-          
-          files: |
-            dist/wgcf_linux_amd64
-            dist/wgcf_linux_amd64.sha256
-            dist/wgcf_linux_arm64
-            dist/wgcf_linux_arm64.sha256
+          tag_name: "wgcf-latest"
+          name: "WGCF (Auto-Updated)"
+          body: "Synced from ${TAG} on $(date)"
+          make_latest: false
+          files: dist/*
