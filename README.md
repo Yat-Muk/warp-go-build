@@ -127,5 +127,3 @@ chmod +x warp-go wgcf warp-plus
 
 [MIT License](https://www.google.com/search?q=LICENSE) | Copyright (c) 2025 Yat-Muk
 
-```
-```
