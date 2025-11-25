@@ -1,6 +1,5 @@
 -----
 
-````markdown
 # warp-go-build: Automated Binary Distribution
 
 [![Mirror Binaries (Sync v1.0.8)](https://github.com/Yat-Muk/warp-go-build/actions/workflows/release.yml/badge.svg)](https://github.com/Yat-Muk/warp-go-build/actions/workflows/release.yml)
@@ -66,7 +65,6 @@ cat wgcf.sha256
 sha256sum wgcf
 # 或自動比對：
 echo "$(cat wgcf.sha256)  wgcf" | sha256sum -c -
-````
 
 -----
 
