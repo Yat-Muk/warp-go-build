@@ -1,4 +1,4 @@
-name: Mirror Tools (IP Scanner & WARP+)
+name: Mirror Tools (Fixed Checksums)
 
 on:
   schedule:
@@ -10,47 +10,29 @@ permissions:
 
 jobs:
   mirror_tools:
-    name: Sync Helper Tools
+    name: Sync Tools
     runs-on: ubuntu-latest
     steps:
-      - name: Download Resources
+      - name: Download
         run: |
           mkdir -p dist
-          
-          echo "1. 下載 IP 優選腳本 (Shell Script)..."
           wget -O dist/warp_endpoint "https://raw.githubusercontent.com/badafans/better-cloudflare-ip/master/shell/cf.sh"
-          
-          echo "2. 下載 WARP+ 刷流量工具 (AMD64)..."
           wget -O dist/warp_plus_linux_amd64 "https://gitlab.com/rwkgyg/CFwarp/-/raw/main/point/warp_plus.sh"
-          
-          echo "3. 下載 WARP+ 刷流量工具 (ARM64)..."
           wget -O dist/warp_plus_linux_arm64 "https://gitlab.com/rwkgyg/CFwarp/-/raw/main/point/warpplusa.sh"
-          
           chmod +x dist/*
 
-      - name: Generate Checksums
+      - name: Generate Individual Checksums
         run: |
           cd dist
-          sha256sum * > tools_checksums.sha256
-          echo "=== Checksums ==="
-          cat tools_checksums.sha256
+          for file in *; do
+            sha256sum "$file" > "$file.sha256"
+          done
 
-      - name: Publish to Release
+      - name: Publish to 'tools-latest'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "tools-latest"
-          name: "Helper Tools (Auto-Sync)"
-          body: |
-            Automated mirror of helper tools.
-            
-            **Contents:**
-            - `warp_endpoint`: Cloudflare IP Scanner
-            - `warp_plus_linux_amd64`: Traffic Generator (x86_64)
-            - `warp_plus_linux_arm64`: Traffic Generator (ARM64)
-            
-            Synced on: $(date +%Y-%m-%d)
-          
+          name: "Helper Tools"
+          body: "Synced on $(date)"
           make_latest: false
-          
-          files: |
-            dist/*
+          files: dist/*
